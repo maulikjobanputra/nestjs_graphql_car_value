@@ -21,6 +21,58 @@ export class UsersService {
       session.token = genToken(user.id);
       return `New User Created with id ${user.id}!`;
     } catch (error) {
+      console.log(`Error while creating a new User!`);
+      throw error;
+    }
+  }
+
+  async findOne(id: string, loggedInUser: User): Promise<User> {
+    try {
+      if (!id) return loggedInUser;
+      const user = await this.userRepository.findOne({ where: { id } });
+      if (!user) throw new GraphQlException(`No user found with ${id} id!`, 404, Exceptions.NOT_FOUND);
+      return user;
+    } catch (error) {
+      console.log(`Error while getting a User!`);
+      throw error;
+    }
+  }
+
+  async find() {
+    try {
+      return this.userRepository.find();
+    } catch (error) {
+      console.log(`Error while getting all the Users!`);
+      throw error;
+    }
+  }
+
+  async update(id: string, body: Partial<User>, loggedInUser: User): Promise<string> {
+    try {
+      let user: User;
+      if (!id) user = loggedInUser;
+      else user = await this.userRepository.findOne({ where: { id } });
+      if (!user) throw new GraphQlException(`No user found with ${id} id!`, 404, Exceptions.NOT_FOUND);
+      delete user.password;
+      Object.assign(user, body);
+      await this.userRepository.save(user);
+      return `Successfully updated the User!`;
+    } catch (error) {
+      console.log(`Error while updating a User!`);
+      throw error;
+    }
+  }
+
+  async remove(id: string, defaultUser: User): Promise<string> {
+    try {
+      let user: User;
+      if (!id) user = defaultUser;
+      else user = await this.userRepository.findOne({ where: { id } });
+      if (!user) throw new GraphQlException(`No user found with ${id} id!`, 404, Exceptions.NOT_FOUND);
+      await this.userRepository.remove(user);
+      return `Successfully removed the User!`;
+    } catch (error) {
+      console.log(`Error while removing a User!`);
       throw error;
     }
   }
@@ -33,54 +85,20 @@ export class UsersService {
       const result = await compare(password, user.password);
       if (!result) throw new GraphQlException(`Invalid Credentials!`, 401, Exceptions.UNAUTHENTICATED);
       session.token = genToken(user.id);
-      return `Successfully Signed In!`;
+      return `Successfully signed-in!`;
     } catch (error) {
+      console.log(`Error while signing-in a User!`);
       throw error;
     }
   }
 
-  async findOne(id: string): Promise<User> {
-    try {
-      const user = await this.userRepository.findOne({ where: { id } });
-      if (!user) throw new GraphQlException(`No user found with ${id} id!`, 404, Exceptions.NOT_FOUND);
-      return user;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async find() {
-    try {
-      return this.userRepository.find();
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async update(id: string, body: Partial<User>): Promise<string> {
-    try {
-      const user = await this.userRepository.findOne({ where: { id } });
-      if (!user) throw new GraphQlException(`No user found with ${id} id!`, 404, Exceptions.NOT_FOUND);
-      Object.assign(user, body);
-      await this.userRepository.save(user);
-      return `Successfully Updated User!`;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async remove(id: string): Promise<string> {
-    try {
-      const user = await this.userRepository.findOne({ where: { id } });
-      if (!user) throw new GraphQlException(`No user found with ${id} id!`, 404, Exceptions.NOT_FOUND);
-      await this.userRepository.remove(user);
-      return `Successfully Removed User!`;
-    } catch (error) {
-      throw error;
-    }
-  }
   signOut(session: ObjectType): string {
-    delete session.token;
-    return `Successfully Signed Out!`;
+    try {
+      delete session.token;
+      return `Successfully signed-out!`;
+    } catch (error) {
+      console.log(`Error while signing-out a User!`);
+      throw error;
+    }
   }
 }

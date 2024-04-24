@@ -19,8 +19,8 @@ export class UsersController {
   }
 
   @Get('/user')
-  getUser(@Query('id') id: string, @GetUser() _user: User): Promise<User | string> {
-    return this.usersService.findOne(id);
+  getUser(@Query('id') id: string, @GetUser() user: User): Promise<User | string> {
+    return this.usersService.findOne(id, user);
   }
 
   @Get('/users')
@@ -29,13 +29,13 @@ export class UsersController {
   }
 
   @Patch('/')
-  updateUser(@Query('id') id: string, @Body() updateUserDto: UpdateUserDto): Promise<string> {
-    return this.usersService.update(id, updateUserDto);
+  updateUser(@Query('id') id: string, @Body() updateUserDto: UpdateUserDto, @GetUser() user: User): Promise<string> {
+    return this.usersService.update(id, updateUserDto, user);
   }
 
   @Delete('/')
-  deleteUser(@Query('id') id: string, @GetUser() _user: User): Promise<string> {
-    return this.usersService.remove(id);
+  deleteUser(@Query('id') id: string, @GetUser() user: User): Promise<string> {
+    return this.usersService.remove(id, user);
   }
 
   @Post('/signin')

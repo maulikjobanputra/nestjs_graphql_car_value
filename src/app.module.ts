@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
-import { ReportsModule } from './reports/reports.module';
 import { User } from './users/user.entity';
-import { Report } from './reports/report.entity';
 import { IsUniqueConstraint } from './utils/unique-validator';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 import { errorFormatter } from './utils/graphql-error-formatter';
+import { CarsModule } from './cars/cars.module';
+import { Car } from './cars/cars.entity';
 
 const { DB_PORT, DB_NAME, DB_HOST, DB_PASSWORD, DB_USERNAME } = process.env;
 
@@ -26,13 +26,14 @@ const { DB_PORT, DB_NAME, DB_HOST, DB_PASSWORD, DB_USERNAME } = process.env;
       port: Number(DB_PORT),
       database: DB_NAME,
       password: DB_PASSWORD,
-      entities: [User, Report],
+      entities: [User, Car],
       synchronize: true
     }),
     UsersModule,
-    ReportsModule
+    CarsModule
   ],
   providers: [
+    IsUniqueConstraint
     // {
     //   provide: APP_INTERCEPTOR,
     //   useClass: ResponseWrapper
@@ -40,8 +41,7 @@ const { DB_PORT, DB_NAME, DB_HOST, DB_PASSWORD, DB_USERNAME } = process.env;
     // {
     //   provide: APP_FILTER,
     //   useClass: CustomFilter
-    // },
-    IsUniqueConstraint
+    // }
   ]
 })
 export class AppModule {
