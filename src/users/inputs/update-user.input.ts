@@ -1,10 +1,10 @@
 import { Field, InputType } from '@nestjs/graphql';
 import { PartialType } from '@nestjs/mapped-types';
 import { IsString, IsStrongPassword } from 'class-validator';
-import { CreateUserDto } from './create-user.dto';
+import { CreateUserInput } from './create-user.input';
 
 @InputType()
-export class UpdateUserDto extends PartialType(CreateUserDto) {
+export class UpdateUserInput extends PartialType(CreateUserInput) {
   @Field({ nullable: true })
   @IsString()
   name?: string;

@@ -1,10 +1,10 @@
 import { Body, Controller, Delete, Get, Patch, Post, Query, Session } from '@nestjs/common';
-import { CreateUserDto } from './dtos/create-user.dto';
+import { CreateUserDto } from './inputs/create-user.input';
 import { UsersService } from './users.service';
 import { User } from './user.entity';
-import { UpdateUserDto } from './dtos/update-user.dto';
+import { UpdateUserDto } from './inputs/update-user.input';
 import { ClassDataSerializer } from 'src/decorators/class-data-serializer.decorator';
-import { SignInUserDto } from './dtos/sign-in-user.dto';
+import { SignInUserDto } from './inputs/sign-in-user.input';
 import { ObjectType } from 'src/interfaces/common';
 import { GetUser } from 'src/decorators/get-user.decorator';
 

@@ -3,7 +3,7 @@ import { IsEmail, IsString, IsStrongPassword } from 'class-validator';
 import { isUnique } from 'src/decorators/unique.decorator';
 
 @InputType()
-export class CreateUserDto {
+export class CreateUserInput {
   @Field()
   @IsString()
   name: string;
