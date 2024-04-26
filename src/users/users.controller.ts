@@ -1,10 +1,10 @@
 import { Body, Controller, Delete, Get, Patch, Post, Query, Session } from '@nestjs/common';
-import { CreateUserDto } from './inputs/create-user.input';
+import { CreateUserInput } from './inputs/create-user.input';
 import { UsersService } from './users.service';
 import { User } from './user.entity';
-import { UpdateUserDto } from './inputs/update-user.input';
+import { UpdateUserInput } from './inputs/update-user.input';
 import { ClassDataSerializer } from 'src/decorators/class-data-serializer.decorator';
-import { SignInUserDto } from './inputs/sign-in-user.input';
+import { SignInUserInput } from './inputs/sign-in-user.input';
 import { ObjectType } from 'src/interfaces/common';
 import { GetUser } from 'src/decorators/get-user.decorator';
 
@@ -14,8 +14,8 @@ export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @Post('/signup')
-  createUser(@Body() createUserDto: CreateUserDto, @Session() session: { [key: string]: any }): Promise<string> {
-    return this.usersService.create(createUserDto, session);
+  createUser(@Body() createUserInput: CreateUserInput, @Session() session: { [key: string]: any }): Promise<string> {
+    return this.usersService.create(createUserInput, session);
   }
 
   @Get('/user')
@@ -29,8 +29,12 @@ export class UsersController {
   }
 
   @Patch('/')
-  updateUser(@Query('id') id: string, @Body() updateUserDto: UpdateUserDto, @GetUser() user: User): Promise<string> {
-    return this.usersService.update(id, updateUserDto, user);
+  updateUser(
+    @Query('id') id: string,
+    @Body() updateUserInput: UpdateUserInput,
+    @GetUser() user: User
+  ): Promise<string> {
+    return this.usersService.update(id, updateUserInput, user);
   }
 
   @Delete('/')
@@ -39,8 +43,8 @@ export class UsersController {
   }
 
   @Post('/signin')
-  signInUser(@Body() signInUserDto: SignInUserDto, @Session() session: ObjectType): Promise<string> {
-    return this.usersService.signIn(signInUserDto, session);
+  signInUser(@Body() signInUserInput: SignInUserInput, @Session() session: ObjectType): Promise<string> {
+    return this.usersService.signIn(signInUserInput, session);
   }
 
   @Post('/signout')

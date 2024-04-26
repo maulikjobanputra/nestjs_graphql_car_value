@@ -3,8 +3,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { compare } from 'bcryptjs';
 import { User } from './user.entity';
-import { CreateUserDto } from './inputs/create-user.input';
-import { SignInUserDto } from './inputs/sign-in-user.input';
+import { CreateUserInput } from './inputs/create-user.input';
+import { SignInUserInput } from './inputs/sign-in-user.input';
 import { ObjectType } from 'src/interfaces/common';
 import { genToken } from 'src/utils/gen-token';
 import { GraphQlException } from 'src/utils/graphql-exception';
@@ -14,9 +14,9 @@ import { Exceptions } from 'src/constants/exceptions';
 export class UsersService {
   constructor(@InjectRepository(User) private userRepository: Repository<User>) {}
 
-  async create(createUserDto: CreateUserDto, session: ObjectType): Promise<string> {
+  async create(createUserInput: CreateUserInput, session: ObjectType): Promise<string> {
     try {
-      const user = this.userRepository.create(createUserDto);
+      const user = this.userRepository.create(createUserInput);
       await this.userRepository.save(user);
       session.token = genToken(user.id);
       return `New User Created with id ${user.id}!`;
@@ -77,9 +77,9 @@ export class UsersService {
     }
   }
 
-  async signIn(signInUserDto: SignInUserDto, session: ObjectType): Promise<string> {
+  async signIn(signInUserInput: SignInUserInput, session: ObjectType): Promise<string> {
     try {
-      const { email, password } = signInUserDto;
+      const { email, password } = signInUserInput;
       const user = await this.userRepository.findOne({ where: { email } });
       if (!user) throw new GraphQlException(`Invalid Credentials!`, 401, Exceptions.UNAUTHENTICATED);
       const result = await compare(password, user.password);
